@@ -27,7 +27,83 @@ n == heights[i].length
 **/
 
 class Solution {
+    int[][] directions = new int[][]{
+        {0,1},
+        {1,0},
+        {0,-1},
+        {-1,0}
+    };
+    int row;
+    int col;
+    int[][] land;
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
+        if(heights.length == 0 || heights[0].length == 0) {
+            return new ArrayList<>();
+        }
+        
+        
+        row = heights.length;
+        col = heights[0].length;
+        land = heights;
+        
+        Queue<int[]> pQueue = new LinkedList<>();
+        Queue<int[]> aQueue = new LinkedList<>();
+        
+        for(int i=0;i< row;i++) {
+            pQueue.offer(new int[]{i,0});
+            aQueue.offer(new int[]{i, col-1});
+        }
+        
+        for(int i=0;i< col;i++) {
+            pQueue.offer(new int[]{0,i});
+            aQueue.offer(new int[]{row-1, i});
+        }
+        
+        //perform BFS
+        boolean[][] pReachable = bfs(pQueue);
+        boolean[][] aReachable = bfs(aQueue);
+        
+        //find common
+        List<List<Integer>> common = new ArrayList<>();
+        for(int i=0;i<row;i++){
+            for(int j=0;j<col;j++) {
+                if(pReachable[i][j] && aReachable[i][j]) {
+                    common.add(List.of(i,j));
+                }
+            }
+        }
+        return common;
+    }
+    
+    public boolean[][] bfs(Queue<int[]> queue){
+        boolean[][] reachable = new boolean[row][col];
+        while(!queue.isEmpty()) {
+            int[] cell = queue.poll();
+            //mark this cell
+            reachable[cell[0]][cell[1]] = true;
+            
+            //directions
+            for(int[] dir : directions) {
+                int newRow = cell[0]+dir[0];
+                int newCol = cell[1]+dir[1];
+                //check if valid cell
+                if(newRow < 0 || newRow >= row || newCol <0 || newCol >= col) {
+                    continue;
+                }
+                //check if already visited
+                if(reachable[newRow][newCol]) {
+                    continue;
+                }
+                
+                if(land[newRow][newCol] < land[cell[0]][cell[1]]) {
+                    continue;
+                }
+                queue.offer(new int[]{newRow, newCol});
+            }
+                
+        }
+        return reachable;
         
     }
+    
 }
