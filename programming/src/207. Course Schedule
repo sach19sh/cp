@@ -29,8 +29,66 @@ prerequisites[i].length == 2
 All the pairs prerequisites[i] are unique.
 **/
 
+
+/**
+Algo
+- Create graph of given input/dependecies as directed graph
+- Find if cycle using topological sort [find indegree, process all with zero indegree using queue]
+- If not able to process all with this queue , that means there is cycle and indegree for all courses can't be reduced to zero.
+https://www.youtube.com/watch?v=rG2-_lgcZzo
+
+Eg 
+[1,2] [2,3] [3,4] [3,5] 
+
+4->3->2->1
+5->3
+      
+
+**/
 class Solution {
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        
+	    Map<Integer, List<Integer>> adj = new HashMap<>();
+	    int[] indegree = new int[numCourses];
+
+	    //prepare initial data
+	    for(int[] pre : prerequisites) {
+	        List<Integer> dep = adj.getOrDefault(pre[1], new ArrayList());
+	        dep.add(pre[0]);
+	        indegree[pre[0]]++;
+	        adj.put(pre[1], dep);
+	    }
+
+	    // add all with indegree zero to queue
+	    Queue<Integer> queue = new LinkedList<Integer>();
+	    for(int i=0;i<numCourses;i++){
+	        if(indegree[i] == 0){
+	            queue.add(i);
+	        }
+	    }
+
+	    //Now process until queue is empty or processed all items
+	    int count = 0;
+	    while(!queue.isEmpty()) {
+	        int current = queue.poll();
+	        if(indegree[current] == 0){
+	            count++;
+	        }
+	        if(!adj.containsKey(current)){
+	            continue;
+	        }
+	        List<Integer> nbrs = adj.get(current);
+	        for(Integer nbr : nbrs) {
+	            indegree[nbr]--;
+	            if(indegree[nbr] == 0){
+	                queue.add(nbr);
+	            }
+	        }
+	    }
+
+	    if(count != numCourses){
+	        return false;
+	    }
+	    return true;
     }
+
 }

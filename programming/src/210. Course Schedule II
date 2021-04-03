@@ -38,6 +38,51 @@ All the pairs [ai, bi] are distinct.
 
 class Solution {
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        
+        Map<Integer, List<Integer>> adj = new HashMap<>();
+        int[] indegree = new int[numCourses];
+
+        // prepare initial data
+        for(int[] pre : prerequisites) {
+           List<Integer> ll = adj.getOrDefault(pre[1], new ArrayList<>());
+           ll.add(pre[0]);
+           indegree[pre[0]]++;
+           adj.put(pre[1], ll);
+        }
+
+        //Add initial data to queue with indegree zero
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i=0;i<numCourses;i++){
+            if(indegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+
+        // process and prepare result in order of polling
+        int count = 0;
+        int[] result = new int[numCourses];
+        while(!queue.isEmpty()) {
+            int current = queue.poll();
+            if(indegree[current] == 0){
+                result[count] = current;
+                count++;
+            }
+            if(!adj.containsKey(current)){
+                continue;
+            }
+            List<Integer> nbrs = adj.get(current);
+            for(Integer nbr : nbrs) {
+                indegree[nbr]--;
+                if(indegree[nbr] == 0) {
+                    queue.add(nbr);
+                }
+            }
+        }
+
+        if(count != numCourses) {
+            return new int[0];  // ***** empty ARRAY ******
+        } else {
+            return result;
+        }
+
     }
 }
