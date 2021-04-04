@@ -38,32 +38,43 @@ newInterval.length == 2
 0 <= newInterval[0] <= newInterval[1] <= 105**/
 
 class Solution {
-    public int[][] insert(int[][] intervals, int[] newInterval) {
-        if(intervals.length < 1) {
-            int[][] res = new int[][]{{newInterval[0],newInterval[1]}};
-            return res;
-        }
+    public int[][] insert(int[][] intervals, int[] newInt) {
         
-        int[][] newarray = new int[intervals.length+1][intervals[0].length];
-        int i = 0;
-        for(int[] interval : intervals) {
-            newarray[i] = interval;
-            i++;
+        if(intervals.length < 1){
+            int[][] newinterval = new int[1][2];
+            newinterval[0] = newInt;
+            return newinterval;
         }
-        newarray[i] = newInterval;
+        int[][] newinterval = new int[intervals.length+1][intervals[0].length];
+        for(int i=0;i<intervals.length;i++) {
+            newinterval[i] = intervals[i];
+        }
+        newinterval[intervals.length] = newInt;
         
-        Arrays.sort(newarray, (i1,i2) -> Integer.compare(i1[0], i2[0]));
-        int[] currentInterval = newarray[0];
-        List<int[]> res = new ArrayList<>();
-        res.add(currentInterval);
-        for(int[] interval : newarray) {
-            if(interval[0]<=currentInterval[1]) {
-                currentInterval[1] = Math.max(interval[1], currentInterval[1]);
-            } else {
-                currentInterval = interval;
-                res.add(currentInterval);
+        //Sort array
+        Arrays.sort(newinterval, (a,b)->(a[0]-b[0]));
+        
+        int[] current = newinterval[0];
+        int count = 0;
+        List<int[]> result = new ArrayList<>();
+        result.add(current);
+        
+        //merge
+        for(int[] input : newinterval) {
+            if(count == 0) {
+                count++;
+                continue;
             }
+            int start = input[0];
+            int end = input[1];
+            if(start <= current[1]) {
+                current[1] = Math.max(end, current[1]);
+            } else {
+                current = input;
+                result.add(current);
+            }
+            
         }
-        return res.toArray(new int[res.size()][]);
+        return result.toArray(new int[result.size()][]);
     }
 }

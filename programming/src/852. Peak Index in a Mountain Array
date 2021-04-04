@@ -41,3 +41,26 @@ arr is guaranteed to be a mountain array.
 
 **/
 
+
+/**
+IMPORTANT Q 
+- binary search  as 0 to array.length with moving left/right to mid only.
+- storing and returning of result in lower boundry point
+
+**/
+class Solution {
+    public int peakIndexInMountainArray(int[] arr) {
+        int l = 0;
+        int n = arr.length;
+        int r = n;
+        
+        while(l+1<r) {
+            int mid = l+((r-l)/2);
+            if(arr[mid-1]<arr[mid]) {
+                l = mid;
+            } else 
+                r=mid;
+            }
+        return l;
+    }
+}

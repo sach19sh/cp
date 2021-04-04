@@ -32,18 +32,20 @@ class Solution {
         int counter = 0;
         int[] currentInterval = intervals[0];
         List<int[]> output = new ArrayList<>();
+        output.add(currentInterval);
+        
         for(int[] interval : intervals) {
             if(counter == 0){
                 counter++;
                 continue;
-            } else if(currentInterval[1] > interval[0]) {
-                currentInterval[1] = interval[1];
+            } else if(currentInterval[1] >= interval[0]) {
+                currentInterval[1] = Math.max(interval[1], currentInterval[1]);
             } else {
+                currentInterval = interval;   
                 output.add(currentInterval);
-                currentInterval = interval;    
             }
             
         }
-        return output.t;
+        return output.toArray(new int[output.size()][]);
     }
 }
