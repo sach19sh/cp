@@ -26,3 +26,6 @@
 - All Nodes K distance from Binary Tree - https://leetcode.com/problems/all-nodes-distance-k-in-binary-tree/
 
 
+## DFS
+- [Longest Increasing Path in a Matrix](https://leetcode.com/problems/longest-increasing-path-in-a-matrix/) DFS will fail with time limit exced error. Add cache/memoisation with DFS
+- 
